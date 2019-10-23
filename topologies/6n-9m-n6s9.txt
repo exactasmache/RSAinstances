@@ -1,0 +1,14 @@
+# Created by Marcelo Bianchetti
+# Format:
+#   First line: |N|  |E|
+#   Other lines: <node node weight>
+6 9
+0 1 390
+0 2 410
+1 2 590
+1 3 750
+2 3 900
+2 4 730
+3 4 440
+3 5 710
+4 5 600
