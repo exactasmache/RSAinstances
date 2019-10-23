@@ -6,15 +6,16 @@
     based on the data of the bibliography. It depends on the modulation level
     the optical fiber used, the graph density among other paramters.
 
-    From the bibliography we got the next more commonly used data for the RSA:
+    From the literature we obtained the most used data for the RSA problem:
 
-    + The slot bandwith is between 5 and 12.5 GHz, but it could be greater. 
-    50 GHz is the used on the WDM problem.
+    + The slot bandwith most of the cases is 12.5 GHz. However it could be
+    smaller (sometimes 5 GHz) or larger, but not much larger, due to the fact
+    that for the RWA problem with WDM, the minimum bandwidth of the slot is 
+    50 GHz and the main objective of RSA is to improve granularity.
 
-    + The slot bitrate is about 2.5 Gbps
-    
-    + The average optical fiber bandwidth is 4800 GHz despite the maximal
-    optical fiber bandwith is around 231 THz.
+    + The bandwidth of the optical fiber used on average is 4800 GHz,
+    although the theoretical maximum bandwidth of the optical fiber is
+    around 231 THz.
 '''
 
 import os

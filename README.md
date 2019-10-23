@@ -13,21 +13,19 @@ Given a directed graph __G=(V,E)__ representing the optical fiber network, a set
 
 ## Parameters
 
-From the literature we got the more commonly used data for the RSA problem:
+From the literature we obtained the most used data for the RSA problem:
 
-  - The slot bandwith is between 5 and 12.5 GHz, but it could be greater. 50 GHz is the used on the WDM problem.
+  - The slot bandwith most of the cases is 12.5 GHz. However it could be smaller (sometimes 5 GHz) or larger, but not much larger, due to the fact that for the RWA problem with WDM, the minimum bandwidth of the slot is 50 GHz and the main objective of RSA is to improve granularity.
 
-  - The slot bitrate is about 2.5 Gbps
-    
-  - The average optical fiber bandwidth is 4800 GHz despite the maximal optical fiber bandwith is around 231 THz.
+  - The bandwidth of the optical fiber used on average is 4800 GHz, although the theoretical maximum bandwidth of the optical fiber is around 231 THz.
 
-We use that information to define the available number of slots per link, the maximal amount of slots used by each demand. This is stored in the variables:
+We use that information to define the available number of slots per link and the maximal amount of slots used by each demand. This is stored in the variables:
 
 ```
 avaliable_S   &   max_slots_by_demand
 ```
     
-In order to define the amount of demands of each instance we estimate an upper bound using the graph density, the number of slots per link and the average of slots by demand.
+To define the number of demands of each instance, we estimate an upper limit using the density of the graph, the number of slots per link and the average of slots per demand trying to make the majority of instances feasible, but not all.
 
 ## Files
 The main scrip called **instances_generator.py** reads the topologies stored in the __topologies/__ directory and generates a serie of instances files for the RSA for each topology based on the data of the literature. It depends on the modulation level the optical fiber used, the graph density among other paramters.
