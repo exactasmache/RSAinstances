@@ -13,7 +13,7 @@ Given a directed graph __G=(V,E)__ representing the optical fiber network, a set
 
 ## Parameters
 
-From the literature we got the next more commonly used data for the RSA problem:
+From the literature we got the more commonly used data for the RSA problem:
 
   - The slot bandwith is between 5 and 12.5 GHz, but it could be greater. 50 GHz is the used on the WDM problem.
 
@@ -43,10 +43,12 @@ The topology file is preceded by the number of nodes and the number of edges fol
 <node k>    <node l>
 ...
 ```
-. Most of the instances belong to capacitated networks and we got the data. In those cases the weight of each edge is added when is defined. 
+Most of the instances belong to capacitated networks and we got the data. In those cases the weight of each edge is added when is defined. 
 ```
 <node i>    <node j>    <weight ij>
 ```
+
+As well as the problem is stated over directed graphs and due to the way in which the networks are made we asume all the links have both senses.
 
 The instance file also starts with a header explaining the format briefly. Then it has the amount of slots available for each edge and the number of the requested demands.
 ```
