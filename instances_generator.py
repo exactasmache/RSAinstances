@@ -13,7 +13,7 @@
 
     + The slot bitrate is about 2.5 Gbps
     
-    + The average optical fiber used bandwidth is 4800 GHz despite the maximal
+    + The average optical fiber bandwidth is 4800 GHz despite the maximal
     optical fiber bandwith is around 231 THz.
 '''
 
