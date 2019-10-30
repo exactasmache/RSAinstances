@@ -56,7 +56,7 @@ def calculateMaxNumberOfDemands(n, m, S, max_sd):
 
 
 def readTopologyData(tops_dir, top_fname):
-    ''' Returns the amount of nodes, edges and density of the graph '''
+    ''' Returns the amount of nodes and edges of the graph '''
     with open(os.path.join(tops_dir, top_fname)) as f:
         for l in f:
             if l.startswith('#'):
@@ -75,11 +75,11 @@ if __name__ == "__main__":
                    100, 150, 200, 300, 400, 600, 800, 1000]
 
     # From a low loaded network to a really high loaded one.
-    max_slots_by_demand = [4, 10, 15, 20, 25, 30, 50, 80]
+    max_slots_by_demand = [4, 6, 8, 10, 15, 20, 25, 30, 50, 80]
 
     if not os.path.exists(instances_dir):
         os.makedirs(instances_dir)
-    
+
     random.seed(1988)
     for top_fname in os.listdir(topologies_dir):
         top_name = os.path.splitext(top_fname)[0]
@@ -92,9 +92,12 @@ if __name__ == "__main__":
         for S in avaliable_S:
             for max_sd in max_slots_by_demand:
 
+                if max_sd > S:
+                    break
+
                 max_nD = calculateMaxNumberOfDemands(n, m, S, max_sd)
                 nD = random.randint(int(max_nD/2), max_nD)
-                
+
                 demand_f = os.path.join(
                     instance_dir, instance_fname.format(top_name, S, max_sd, nD))
 
@@ -103,12 +106,13 @@ if __name__ == "__main__":
                     out.write('# Format:\n')
                     out.write('#   First line: S  |D|\n')
                     out.write('#   Other lines: <src\tdst\t#slots>\n')
-                    
+
                     l = '{}{}{}'.format(S, sep, nD)
                     out.write(line_enter.format(l))
-                    
+
                     for _ in range(nD):
                         src, dst = random.sample(range(n), 2)
                         s = random.randint(1, max_sd)
-                        l = '{src}{sep}{dst}{sep}{s}'.format(S=S, sep=sep, src=src, dst=dst, s=s)
+                        l = '{src}{sep}{dst}{sep}{s}'.format(
+                            S=S, sep=sep, src=src, dst=dst, s=s)
                         out.write(line_enter.format(l))
