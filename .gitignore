@@ -1,6 +1,7 @@
 # Custom for this particular project
 images/
 instances/
+original_images/
 *.DS_Store
 
 # Byte-compiled / optimized / DLL files
