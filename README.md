@@ -19,20 +19,20 @@ From the literature we obtained the most used data for the RSA problem:
 
   - The bandwidth of the optical fiber used on average is 4800 GHz, although the theoretical maximum bandwidth of the optical fiber is around 231 THz.
 
-We use that information to define the available number of slots per link and the maximal amount of slots used by each demand. This is stored in the variables:
+We use that information to define the default available number of slots per link the maximal amount of slots used by each demand and the amount of demands.
+    
+To define the number of demands of each instance, we estimate an upper limit using the density of the graph, the number of slots per link and the average of slots per demand trying to make the majority of instances feasible, but not all. The amount of demands will be a number between that and its half.
 
 ```
-avaliable_S   &   max_slots_by_demand
+max_number_of_demands = (n - 1) * d * S / (max_slots_per_demand / 2)
 ```
-    
-To define the number of demands of each instance, we estimate an upper limit using the density of the graph, the number of slots per link and the average of slots per demand trying to make the majority of instances feasible, but not all.
 
 ## Files
 The main scrip called **instances_generator.py** reads the topologies stored in the __topologies/__ directory and generates a serie of instances files for the RSA for each topology based on the data of the literature. It depends on the modulation level the optical fiber used, the graph density among other paramters.
 
 ## Data Format
 The format of the data is commented in the header of each file. The separator used is the tabulation, and the line starting with # is a comment.
-
+### Topology
 The topology file is preceded by the number of nodes and the number of edges followed by the list of these one by line.
 ```
 # Comment
@@ -41,14 +41,15 @@ The topology file is preceded by the number of nodes and the number of edges fol
 <node k>    <node l>
 ...
 ```
-Most of the instances belong to capacitated networks and we got the data. In those cases the weight of each edge is added when is defined. 
+Most of the instances belong to capacitated networks and we were able to obtain that data. In those cases, the weight of each edge is added when it is defined.
 ```
 <node i>    <node j>    <weight ij>
 ```
 
+### Generated Instance
 As well as the problem is stated over directed graphs and due to the way in which the networks are made we asume all the links have both senses.
 
-The instance file also starts with a header explaining the format briefly. Then it has the amount of slots available for each edge and the number of the requested demands.
+The instance file also begins with a header that briefly explains the format. The version of this software and the used seed are shown there. The number of slots available for each edge and the number of demands requested are shown below followed by the list of demands.
 ```
 # Comment
 S     |D|
@@ -58,11 +59,49 @@ S     |D|
 ```
 
 ## Usage
-  
+### Requirements
+The requirements are stored in `requirements.txt`. They can be installed via
+
+```
+pip install -r requirements.txt
+```
+
+## Run
 To generate the instances just run the script:
 
 ```
 python instances_generator.py
 ```
 
-The instances are going to be placed on a new folder called instances into the main directory. Each one of those files with its asociated topology are the input for the RSA problem.
+By default the instances are going to be placed on a new folder called instances into the directory of the script into subfolders according to the maximum percent of slots used by demands and the topology. Each one of those files with its asociated topology are the input for the RSA problem.
+
+Run the following to see how to configure the parameters:
+
+```
+python instances_generator.py -h
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -mdir MDIR            The main directory or path. If no tdir or idir parameters are used, mdir must contain the 'topologies' and/or 'instances' folder. The default
+                        value is the location of this script
+  -tdir TDIR            The topologies directory or path.
+  -idir IDIR            The directory or path for the created instances.
+  -s SEED, --seed SEED  The random seed. Default is 1988.
+  -S SLOTS [SLOTS ...], --slots SLOTS [SLOTS ...]
+                        List of amounts of available slots.
+  -p PERCENTS [PERCENTS ...], --percents PERCENTS [PERCENTS ...]
+                        List of maximum percentage of total available slots that a demand can use. Must be in (0, 1].
+```
+
+### Example
+The following line will generate instances for S in [10, 25] and p in [10%, 20%, 30%, 50%]. They will be saved in `./instances/`.
+
+```
+python instances_generator.py -S 10 25 -p .1 .3 .5 .2
+```
+
+This one will generate instances with S in [10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400, 600, 800, 1000] and p in [10%, 20%, 30%, ..., 90%] in the directory `/home/instances`.
+
+```
+python instances_generator.py -idir /home/instances
+```
