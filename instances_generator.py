@@ -26,7 +26,7 @@ import math
 
 __author__ = "Marcelo Bianchetti"
 __credits__ = ["Marcelo Bianchetti"]
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Marcelo Bianchetti"
 __email__ = "mbianchetti at dc.uba.ar"
 __status__ = "Production"
@@ -38,6 +38,17 @@ sep = '\t'
 def error(err):
     print("ERROR: {}".format(err))
     exit(1)
+
+
+def getPair(n, used_dict=None):
+    ''' Returns a pair of n different nodes. If a used_dict is given, the pair
+    does not repeat any element.'''
+    src, dst = random.sample(range(n), 2)
+    if used_dict is None:
+        return src, dst
+    while dst in used_dict[src]:
+        src, dst = random.sample(range(n), 2)
+    return src, dst
 
 
 def calculateGraphDensity(n, m):
@@ -76,26 +87,27 @@ def readTopologyData(tops_dir, top_fname):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("-mdir",
-                        type=str,
-                        help="The main directory or path. If no tdir or idir "
-                             "parameters are used, mdir must contain the "
-                             "'topologies' and/or 'instances' folder. The "
-                             "default value is the location of this script")
-    parser.add_argument("-tdir",
-                        type=str,
-                        help="The topologies directory or path.")
-    parser.add_argument("-idir",
-                        type=str,
-                        help="The directory or path for the created "
-                        "instances.")
-    parser.add_argument("-s", "--seed", type=int, default=1988,
-                        help="The random seed. Default is 1988.")
-    parser.add_argument("-S", "--slots", nargs='+', type=int,
-                        help="List of amounts of available slots.")
+    parser.add_argument("-mdir", type=str, help="The main directory or path. "
+                        "If no tdir or idir parameters are used, mdir must "
+                        "contain the 'topologies' and/or 'instances' folder. "
+                        "The default value is the location of this script")
+    parser.add_argument("-tdir", type=str, help="The topologies directory or "
+                        "path.")
+    parser.add_argument("-idir", type=str, help="The directory or path for the"
+                        " created instances.")
+    parser.add_argument("-s", "--seed", type=int, default=1988, help="The "
+                        "random seed. Default is 1988.")
+    parser.add_argument("-S", "--slots", nargs='+', type=int, help="List of "
+                        "amounts of available slots.")
     parser.add_argument("-p", "--percents", nargs='+', type=float,
                         help="List of maximum percentage of total available "
                              "slots that a demand can use. Must be in (0, 1].")
+    parser.add_argument("-d", "--density", type=float, default=1.0,
+                        help="Density factor. The maximum amount of demands is"
+                        " multiplied by this factor. Default is 1.0")
+    parser.add_argument("-m", "--multiple", action="store_true", help="If set,"
+                        " multiple demands between a source and a destination"
+                        " are allowed.")
     args = parser.parse_args()
 
     main_dir = (os.path.dirname(os.path.abspath(__file__))
@@ -109,6 +121,7 @@ if __name__ == "__main__":
                      if args.idir is None
                      else os.path.abspath(args.idir))
 
+    # Check directories
     for d in [main_dir, topologies_dir]:
         if not os.path.exists(d):
             error("Directory '{}' not found.".format(d))
@@ -117,13 +130,16 @@ if __name__ == "__main__":
 
     random.seed(args.seed)
 
-    # Available slots per fiber
+    if not 0 < args.density < 10:
+        error("Demands density must be in (0, 10)")
 
-    avaliable_S = ([10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400,
-                    600, 800, 1000] if args.slots is None else
+    # Available slots per fiber. Discarding non-positive values
+    avaliable_S = ([10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400, 600,
+                    800, 1000] if args.slots is None else
                    [s for s in set(args.slots) if s > 0])
 
     # Default: From a lightly loaded network to a heavily loaded one.
+    # Discarding values not in (0, 1]
     max_percentages_of_slots_by_demand = (np.arange(.1, .9, .1)
                                           if args.percents is None else
                                           [p for p in set(args.percents)
@@ -161,6 +177,7 @@ if __name__ == "__main__":
                 max_sd = math.ceil(percentage * S)
 
                 max_nD = calculateMaxNumberOfDemands(n, m, S, max_sd)
+                max_nD = int(max(1, max_nD * args.density))
                 nD = random.randint(int(max_nD/2), max_nD)
 
                 demand_f = os.path.join(
@@ -178,12 +195,16 @@ if __name__ == "__main__":
                     line = '{}{}{}'.format(S, sep, nD)
                     out.write(line_enter.format(line))
 
+                    # Stores the dict src --> dst to not allow repeated
+                    # pairs when 'multiple' is disabled
+                    used_pair = None if args.multiple else {}
                     for _ in range(nD):
-                        src, dst = random.sample(range(n), 2)
+                        src, dst = getPair(n)
+
+                        if not args.multiple:
+                            used_pair[src] = dst
+
                         s = random.randint(1, max_sd)
                         line = '{src}{sep}{dst}{sep}{s}'.format(
                             S=S, sep=sep, src=src, dst=dst, s=s)
                         out.write(line_enter.format(line))
-
-
-# git commit -m "Version that allows to pass the directory names, the seed, the max slot available per arc and the percentage of the slots that a demand can use as arguments. Reordering the output directories. "

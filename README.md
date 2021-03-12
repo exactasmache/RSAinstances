@@ -82,8 +82,8 @@ python instances_generator.py -h
 
 optional arguments:
   -h, --help            show this help message and exit
-  -mdir MDIR            The main directory or path. If no tdir or idir parameters are used, mdir must contain the 'topologies' and/or 'instances' folder. The default
-                        value is the location of this script
+  -mdir MDIR            The main directory or path. If no tdir or idir parameters are used, mdir must contain the 'topologies' and/or 'instances' folder. The
+                        default value is the location of this script
   -tdir TDIR            The topologies directory or path.
   -idir IDIR            The directory or path for the created instances.
   -s SEED, --seed SEED  The random seed. Default is 1988.
@@ -91,6 +91,9 @@ optional arguments:
                         List of amounts of available slots.
   -p PERCENTS [PERCENTS ...], --percents PERCENTS [PERCENTS ...]
                         List of maximum percentage of total available slots that a demand can use. Must be in (0, 1].
+  -d DENSITY, --density DENSITY
+                        Density factor. The maximum amount of demands is multiplied by this factor. Default is 1.0
+  -m, --multiple        If set, multiple demands between a source and a destination are allowed.
 ```
 
 ### Example
@@ -100,8 +103,8 @@ The following line will generate instances for S in [10, 25] and p in [10%, 20%,
 python instances_generator.py -S 10 25 -p .1 .3 .5 .2
 ```
 
-This one will generate instances with S in [10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400, 600, 800, 1000] and p in [10%, 20%, 30%, ..., 90%] in the directory `/home/instances`.
+This one will generate instances with S in [10, 15, 20, 30, 40, 60, 80, 100, 150, 200, 300, 400, 600, 800, 1000] and p in [10%, 20%, 30%, ..., 90%] in the directory `/home/instances`, allowing multiple demands between each pair (src, dst).
 
 ```
-python instances_generator.py -idir /home/instances
+python instances_generator.py -idir /home/instances -m
 ```
