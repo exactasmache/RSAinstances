@@ -9,7 +9,9 @@ The __Routing and Spectrum Assignment problem__ (RSA) consists in establishing t
 - __non-overlapping slot:__ a slot can be assigned to various demands if the routes assigned to these demands do not share any link.
 
 ### Formally 
-Given a directed graph _G=(V,E)_ representing the optical fiber network, a set of demands _D = {(s<sub>1</sub>, t<sub>1</sub>, v<sub>1</sub>), ..., (s<sub>k</sub>, t<sub>k</sub>, v<sub>k</sub>)}_ --such that each demand _i_ in _{1, ..., k}_ has a source _s<sub>i</sub>_ in _V_, a target _t<sub>i</sub>_ in _V_, and a volume _v<sub>i</sub>_ (positive integer) -- and a fixed number _s*_ (positive integer) of available slots, RSA consists in establishing a lightpath associated to each demand, in such a way that lightpaths do not overlap. In other words, each demand _i_ in _{1, ..., k}_ must be assigned a path _P<sub>i</sub>_ beloging to _E_ in _G_ between _s<sub>i</sub>_ and _t<sub>i</sub>_ and an interval _I<sub>i</sub>_ consisting of _v<sub>i</sub>_ consecutive slots in _[1,s*]_ in such a way that if the intersection of _P<sub>i</sub>_ with _P<sub>j</sub>_ is not empty then the intersetion of _I<sub>i</sub>_ with _I<sub>j</sub>_ must, for any two demands _i_ not equal to _j_ (i.e., if the paths assigned to _i_ and _j_ share an arc, then the assigned slot intervals must be disjoint).
+Given a directed graph _G = (V, E)_ representing the optical fiber network, a set of demands _D = {(s<sub>1</sub>, t<sub>1</sub>, v<sub>1</sub>), ..., (s<sub>k</sub>, t<sub>k</sub>, v<sub>k</sub>)}_ --such that each demand _i_ in _{1, ..., k}_ has a source _s<sub>i</sub>_ in _V_, a target _t<sub>i</sub>_ in _V_, and a volume _v<sub>i</sub>_ (positive integer) -- and a fixed number _s*_ (positive integer) of available slots, RSA consists in establishing a lightpath associated to each demand, in such a way that lightpaths do not overlap. In other words, each demand _i_ in _{1, ..., k}_ must be assigned a path _P<sub>i</sub>_ beloging to _E_ in _G_ between _s<sub>i</sub>_ and _t<sub>i</sub>_ and an interval _I<sub>i</sub>_ consisting of _v<sub>i</sub>_ consecutive slots in _[1, s*]_ in such a way that if the intersection of _P<sub>i</sub>_ with _P<sub>j</sub>_ is not empty then the intersetion of _I<sub>i</sub>_ with _I<sub>j</sub>_ must, for any two demands _i_ not equal to _j_ (i.e., if the paths assigned to _i_ and _j_ share an arc, then the assigned slot intervals must be disjoint).
+
+Twelve integer linear programming models to solve this version of RSA can be found in [[1]](https://link.springer.com/article/10.1007/s11750-018-0483-6), and a branch-and-cut algorithm using several families of valid equalities, inequalities and optimality cuts can be found in [[2]](https://arxiv.org/abs/2106.15454).
 
 ## Parameters
 
@@ -46,8 +48,8 @@ In order to get an instance for RSA, besides the topology, we must define the ma
   - The bandwidth of the optical fiber used on average is 4800 GHz, (although the theoretical maximum bandwidth of the optical fiber is around 231 THz).
   - We can have up to 3200 slots in a 5THz spectrum using 6.25 GHz slots.
   - The arc capacity _s*_ is normaly fixed in range [170, 320].
-  - The amount of demands _|D|_ is normaly in the range [10,100] except for some outliers that use 552, or even a thousand. But these large values are used for heuristic experimentations.
-  - The volume needed by each demand _d&isin; D_ usually belongs to the range [1,20], but it depends on the value of s*.
+  - The amount of demands |_D_| is normaly in the range [10,100] except for some outliers that use 552, or even a thousand. But these large values are used for heuristic experimentations.
+  - The volume needed by each demand _d &isin; D_ usually belongs to the range [1,20], but it depends on the value of s*.
 \end{itemize}
 
 ## Generating the instances
@@ -56,7 +58,7 @@ The generator uses two different definitions to the term _density_, namely,
   - __Arcs-density__: amount of links of the topology over a complete graph.
   - __Demands-Density__: Relation between the maximum volume required by the demands and the arc capacity, i.e., _s*_.
 
-To calculate the arcs-density for each topology, we interpret it as a directed graph _G(V,E)_, which is the natural way, even though there are several works that assume symmetrical demands using the same spectrum, thus simplifying the number of edges in half by using undirected graphs.
+To calculate the arcs-density for each topology, we interpret it as a directed graph _G = (V, E)_, which is the natural way, even though there are several works that assume symmetrical demands using the same spectrum, thus simplifying the number of edges in half by using undirected graphs.
 
 The arcs-density of a graph _G_, called as _&Delta;(G)_, then is calculated as
 
@@ -71,8 +73,10 @@ as the maximum volume required by all the demands for a given instance _i_. In o
 <img src="https://latex.codecogs.com/svg.latex?maxSD=p\times%20s^*," title="maxSD = p\times \bar s,"/>
 
 in such a way that each demand uses a random number in 
-<img src="https://latex.codecogs.com/svg.latex?\frac{1}{2}maxSD,~maxSD," title="\frac{1}{2}maxSD,~maxSD"/> 
- and an optional factor _F_ to limit the number of demands, namely,
+
+<img src="https://latex.codecogs.com/svg.latex?[\frac{1}{2}maxSD,~maxSD]," title="\frac{1}{2}maxSD,~maxSD"/> 
+
+and an optional factor _F_ to limit the number of demands, namely,
 
 <img src="https://latex.codecogs.com/svg.latex?|D|=\frac{2\times%20F\times(|V|-1)\times\Delta(G)\times%20s^*}{maxSD}," title="|D| = \frac{2\times F \times (|V| - 1) \times \Delta(G) \times \bar s}{maxSD},"/>
 
@@ -108,7 +112,7 @@ As well as the problem is stated over directed graphs and due to the way in whic
 The instance file also begins with a header that briefly explains the format. The version of this software and the used seed are shown there. The number of slots available for each edge and the number of demands requested are shown below followed by the list of demands.
 ```
 # Comment
-S     |D|
+s*     |D|
 <src d1>    <dst d1>      <n of slots required by d1>
 <src d2>    <dst d2>      <n of slots required by d1>
 ...
@@ -164,3 +168,8 @@ This one will generate instances with S in [10, 15, 20, 30, 40, 60, 80, 100, 150
 ```
 python instances_generator.py -idir /home/instances -m
 ```
+
+## References
+[[1]](https://link.springer.com/article/10.1007/s11750-018-0483-6) Bertero, F., M. Bianchetti, and J. Marenco, _Integer programming models for the routing and spectrum allocation problem_, TOP __26__ (2018), 465–488.
+
+[[2]](https://arxiv.org/abs/2106.15454) Bianchetti M. and J. Marenco, _Valid inequalities and a branch-and-cut algorithm for the Routing and Spectrum Allocation problem_, Electronic Notes in Theoretical Computer Science (_in press_)
