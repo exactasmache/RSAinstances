@@ -172,4 +172,9 @@ python instances_generator.py -idir /home/instances -m
 ## References
 [[1]](https://link.springer.com/article/10.1007/s11750-018-0483-6) Bertero, F., M. Bianchetti, and J. Marenco, _Integer programming models for the routing and spectrum allocation problem_, TOP __26__ (2018), 465–488.
 
-[[2]](https://arxiv.org/abs/2106.15454) Bianchetti M. and J. Marenco, _Valid inequalities and a branch-and-cut algorithm for the Routing and Spectrum Allocation problem_, Electronic Notes in Theoretical Computer Science (_in press_)
+[[2]](https://www.sciencedirect.com/science/article/pii/S187705092102202X) Bianchetti M. and J. Marenco, _Valid inequalities and a branch-and-cut algorithm for the Routing and Spectrum Allocation problem_, Procedia Computer Science 195 (2021), 523-531.
+
+[[3]](https://www.sciencedirect.com/science/article/abs/pii/S0166218X23002366) Bianchetti M. and J. Marenco, _A branch-and-cut algorithm for the routing and spectrum allocation problem_, Discrete Applied Mathematics
+339 (2023), 107-126.
+
+[[4]](https://bibliotecadigital.exactas.uba.ar/download/tesis/tesis_n7196_Bianchetti.pdf) Bianchetti M. _Un algoritmo branch-and-cut para el routing and spectrum allocation problem_, PhD Thesis, University of Buenos Aires, Argentina (2023).
